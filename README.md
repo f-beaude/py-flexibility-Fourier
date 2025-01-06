@@ -13,8 +13,9 @@ This package enables easy Fourier analyses of time series, to assess the flexibi
 Getting started
 ===============
 The package may be installed through [anaconda](https://www.anaconda.com/), by running the following commands
+```
   source activate myenv
   conda install git pip
   pip install git+git://github.com/py-flexibility-Fourier/py-flexibility-Fourier@master
-
+```
 If you need help, please contact [Francois Beaude](mailto:Francois.Beaude@gmail.com)
