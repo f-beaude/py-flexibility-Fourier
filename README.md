@@ -14,7 +14,6 @@ Getting started
 ===============
 The package may be installed through [anaconda](https://www.anaconda.com/), by running the following commands
 ```
-  source activate myenv
   conda install git pip
   pip install git+git://github.com/py-flexibility-Fourier/py-flexibility-Fourier@master
 ```
