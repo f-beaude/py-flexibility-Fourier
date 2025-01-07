@@ -25,7 +25,7 @@ def main():
     
     # interpolate when finding missing values
     if fourier.data.has_invalid_values(csv_data_column):
-        warnings.warn("Invalid values in data --> replaced with linear interpolation")
+        warnings.warn("Replaced " + str(len(fourier.data.invalid_values(csv_data_column))) + " missing values with linear interpolation")
         csv_data_column = csv_data_column.interpolate()
     
     # remove the average of the data, to generate a centered data set (i.e. removing the 0-frequency component)
