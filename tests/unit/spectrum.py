@@ -37,6 +37,7 @@ class spectrum:
             T1 = 1 / 400
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
             spectrum1 = fourier.spectrum.frequency(signal1, float(1/sample_rate))
+            fourier.spectrum.plot(spectrum1, 'Hz')
             
             signal_NA = np.append(signal1, np.nan)
             with self.assertRaises(ValueError):
@@ -68,6 +69,7 @@ class spectrum:
             
             self.assertAlmostEqual(resonant_frequencies12_freqs[0], 1/T1, delta = 0.1)
             self.assertAlmostEqual(resonant_frequencies12_freqs[1], 1/T2, delta = 0.1)
+            self.assertAlmostEqual(resonant_frequencies12_abs[0], 0.5, delta = 0.01)
             self.assertAlmostEqual(resonant_frequencies12_abs[0], 2 * resonant_frequencies12_abs[1], delta = 0.1)
         
         def __plot(self):
@@ -101,37 +103,6 @@ class spectrum:
             spectrum12_months = fourier.spectrum.convert.to_per_month(spectrum12)
             self.assertTrue(all(x == y for x, y in zip(spectrum12.values(), spectrum12_months.values())))
             self.assertTrue(all(30.437 * 24 * 3600 * x == y for x, y in zip(spectrum12.keys(), spectrum12_months.keys())))
-            
-
-###
-            # self.assertEqual(myCountry.name_is_set(), False)
-            # self.assertEqual(myCountry.get_name(), None)
-            # myCountry.set_name('Banana Republic')
-            # self.assertEqual(myCountry.name_is_set(), True)
-            # self.assertEqual(myCountry.get_name(), 'Banana Republic')
-
-            # self.assertEqual(myCountry.ucte_letter_is_set(), False)
-            # self.assertEqual(myCountry.get_ucte_letter(), None)
-            # myCountry.set_ucte_letter('Z')
-            # self.assertEqual(myCountry.ucte_letter_is_set(), True)
-            # self.assertEqual(myCountry.get_ucte_letter(), 'Z')
-            # with self.assertRaises(ValueError):
-            #     myCountry.set_ucte_letter('ZZ')
-
-            # self.assertEqual(myCountry.iso2_is_set(), False)
-            # self.assertEqual(myCountry.get_iso2(), None)
-            # myCountry.set_iso2('BR')
-            # self.assertEqual(myCountry.iso2_is_set(), True)
-            # self.assertEqual(myCountry.get_iso2(), 'BR')
-            # with self.assertRaises(ValueError):
-            #     myCountry.set_iso2('A')
-            # with self.assertRaises(ValueError):
-            #     myCountry.set_iso2('ABC')
-
-            # # check that nothing was unintentionally written in the meantime
-            # self.assertEqual(myCountry.get_name(), 'Banana Republic')
-            # self.assertEqual(myCountry.get_ucte_letter(), 'Z')
-            # self.assertEqual(myCountry.get_iso2(), 'BR')
 
 def main():
     spectrum.all()
