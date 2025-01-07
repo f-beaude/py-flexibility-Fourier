@@ -19,8 +19,8 @@ class spectrum:
         if (data.has_invalid_values(input_signal)):
             raise ValueError('Invalid values in the input signal: ' + str(data.invalid_values(input_signal)))
         
-        fft_result = np.fft.rfft(input_signal)
         N: int = len(input_signal)  # Number of sample points
+        fft_result = np.fft.rfft(input_signal) / N
         frequencies_Hz = np.fft.rfftfreq(N, T)  # Frequency bins
         amplitudes = np.abs(fft_result)
     
