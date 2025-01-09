@@ -1,6 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import os.path
-import pandas as pd
 import unittest
 import sys
 
@@ -27,16 +27,18 @@ class spectrum:
             # 2pi because np.sin takes radians
             y = np.sin((2 * np.pi) * frequencies)
             return x, y
-
         
         # Simple Fourier transform (to test error catching)
         def __simple_transforms(self):
-            sample_rate: int = 1000
-            duration: int = 10000
+            sample_rate: int = 30
+            duration: int = 15
             
-            T1 = 1 / 400
+            T1: float = 1
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
             spectrum1 = fourier.spectrum.frequency(signal1, float(1/sample_rate))
+            plt.figure(figsize=(12, 6))
+            plt.plot(signal1)
+            plt.show()
             fourier.spectrum.plot(spectrum1, 'Hz')
             
             signal_NA = np.append(signal1, np.nan)
@@ -48,17 +50,17 @@ class spectrum:
 
         # Resonant frequencies
         def __resonant_frequencies(self):
-            sample_rate: int = 1000
-            duration: int = 10000
+            sample_rate: int = 20
+            duration: int = 40
             
-            T1 = 1 / 400
+            T1: float = 4
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
             spectrum1 = fourier.spectrum.frequency(signal1, float(1/sample_rate))
             resonant_frequencies1 = fourier.spectrum.resonant_frequencies(spectrum1)
             self.assertEqual(len(resonant_frequencies1), 1)
             self.assertAlmostEqual(list(resonant_frequencies1)[0], 1/T1, delta = 0.1)
             
-            T2 = 1/200
+            T2: float = 2
             __, signal2 = self.__generate_sine_wave(1/T2, sample_rate, duration)
             signal12 = signal1 + 0.5 * signal2
             spectrum12 = fourier.spectrum.frequency(signal12, float(1/sample_rate))
@@ -67,17 +69,17 @@ class spectrum:
             resonant_frequencies12_freqs = list(resonant_frequencies12.keys())
             resonant_frequencies12_abs = list(resonant_frequencies12.values())
             
-            self.assertAlmostEqual(resonant_frequencies12_freqs[0], 1/T1, delta = 0.1)
-            self.assertAlmostEqual(resonant_frequencies12_freqs[1], 1/T2, delta = 0.1)
-            self.assertAlmostEqual(resonant_frequencies12_abs[0], 0.5, delta = 0.01)
-            self.assertAlmostEqual(resonant_frequencies12_abs[0], 2 * resonant_frequencies12_abs[1], delta = 0.1)
+            self.assertAlmostEqual(resonant_frequencies12_freqs[0], 1/T1, delta = 0.01)
+            self.assertAlmostEqual(resonant_frequencies12_freqs[1], 1/T2, delta = 0.01)
+            self.assertAlmostEqual(resonant_frequencies12_abs[0], 1.0, delta = 0.01)
+            self.assertAlmostEqual(resonant_frequencies12_abs[0], 2 * resonant_frequencies12_abs[1], delta = 0.01)
         
         def __plot(self):
-            sample_rate: int = 1000
-            duration: int = 10000
-            T1 = 1 / 400
+            sample_rate: int = 10
+            duration: int = 60
+            T1: float = 6
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
-            T2 = 1/200
+            T2: float = 3
             __, signal2 = self.__generate_sine_wave(1/T2, sample_rate, duration)
             signal12 = signal1 + 0.5 * signal2
             
@@ -86,21 +88,21 @@ class spectrum:
             fourier.spectrum.plot(spectrum12, 'Hz')
         
         def __conversions(self):
-            sample_rate: int = 1000
-            duration: int = 10000
+            sample_rate: int = 10
+            duration: int = 40
             
-            T1 = 1 / 400
-            T2 = 1/200
+            T1: float = 4
+            T2: float = 2
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
             __, signal2 = self.__generate_sine_wave(1/T2, sample_rate, duration)
             signal12 = signal1 + 0.5 * signal2
             spectrum12 = fourier.spectrum.frequency(signal12, float(1/sample_rate))
             
-            spectrum12_days = fourier.spectrum.convert.to_per_day(spectrum12)
+            spectrum12_days: dict = fourier.spectrum.convert.to_per_day(spectrum12)
             self.assertTrue(all(x == y for x, y in zip(spectrum12.values(), spectrum12_days.values())))
             self.assertTrue(all(24 * 3600 * x == y for x, y in zip(spectrum12.keys(), spectrum12_days.keys())))
             
-            spectrum12_months = fourier.spectrum.convert.to_per_month(spectrum12)
+            spectrum12_months: dict = fourier.spectrum.convert.to_per_month(spectrum12)
             self.assertTrue(all(x == y for x, y in zip(spectrum12.values(), spectrum12_months.values())))
             self.assertTrue(all(30.437 * 24 * 3600 * x == y for x, y in zip(spectrum12.keys(), spectrum12_months.keys())))
 

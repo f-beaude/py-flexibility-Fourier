@@ -1,6 +1,5 @@
 import numpy as np
 import os.path
-import pandas as pd
 import math
 import unittest
 import sys

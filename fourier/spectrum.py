@@ -20,7 +20,10 @@ class spectrum:
             raise ValueError('Invalid values in the input signal: ' + str(data.invalid_values(input_signal)))
         
         N: int = len(input_signal)  # Number of sample points
-        fft_result = np.fft.rfft(input_signal) / N
+        # rescale the FFT: 
+        #  - *2 so that the abs of sin = 1, and
+        #  - /N so that the abs is independent from the number of data points
+        fft_result = np.fft.rfft(input_signal) * 2.0 / N
         frequencies_Hz = np.fft.rfftfreq(N, T)  # Frequency bins
         amplitudes = np.abs(fft_result)
     
@@ -84,7 +87,7 @@ class spectrum:
     """
     def plot(spectrum:dict, frequency_unit: str):
         # Plot the frequency spectrum
-        plt.figure(figsize=(12, 6))
+        plt.figure(figsize = (12, 6))
         plt.plot(spectrum.keys(), spectrum.values())
         plt.title('Frequency Spectrum')
         plt.xlabel('Frequency (' + frequency_unit +')')
