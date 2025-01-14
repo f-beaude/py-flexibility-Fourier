@@ -53,21 +53,21 @@ class spectrum:
             sample_rate: int = 20
             duration: int = 40
             
-            T1: float = 4
+            T1: float = 4.0
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
             spectrum1 = fourier.spectrum.frequency(signal1, float(1/sample_rate))
             resonant_frequencies1 = fourier.spectrum.resonant_frequencies(spectrum1)
             self.assertEqual(len(resonant_frequencies1), 1)
             self.assertAlmostEqual(list(resonant_frequencies1)[0], 1/T1, delta = 0.1)
             
-            T2: float = 2
+            T2: float = 2.0
             __, signal2 = self.__generate_sine_wave(1/T2, sample_rate, duration)
             signal12 = signal1 + 0.5 * signal2
             spectrum12 = fourier.spectrum.frequency(signal12, float(1/sample_rate))
             
             resonant_frequencies12 = fourier.spectrum.resonant_frequencies(spectrum12)
-            resonant_frequencies12_freqs = list(resonant_frequencies12.keys())
-            resonant_frequencies12_abs = list(resonant_frequencies12.values())
+            resonant_frequencies12_freqs: list = list(resonant_frequencies12.keys())
+            resonant_frequencies12_abs: list = list(resonant_frequencies12.values())
             
             self.assertAlmostEqual(resonant_frequencies12_freqs[0], 1/T1, delta = 0.01)
             self.assertAlmostEqual(resonant_frequencies12_freqs[1], 1/T2, delta = 0.01)
@@ -77,9 +77,9 @@ class spectrum:
         def __plot(self):
             sample_rate: int = 10
             duration: int = 60
-            T1: float = 6
+            T1: float = 6.0
             __, signal1 = self.__generate_sine_wave(1/T1, sample_rate, duration)
-            T2: float = 3
+            T2: float = 3.0
             __, signal2 = self.__generate_sine_wave(1/T2, sample_rate, duration)
             signal12 = signal1 + 0.5 * signal2
             
