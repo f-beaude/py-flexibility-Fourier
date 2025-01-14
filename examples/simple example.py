@@ -16,10 +16,10 @@ def main():
     
     # extract data from a CSV file (assuming that the first row includes column names)
     # requires an example file. Data can e.g. be downloaded from ENTSO-E's transparency platform
-    data_path: str = os.path.join('..', 'data', 'Load 2023.csv')
-    assert os.path.isfile(data_path), "File doesn't exist: " + data_path
+    input_data_path: str = os.path.join('..', 'data', 'Load 2023.csv')
+    assert os.path.isfile(input_data_path), "File doesn't exist: " + input_data_path
 
-    csv_data_full = pd.read_csv(data_path, sep=',', header = 0)
+    csv_data_full = pd.read_csv(input_data_path, sep=',', header = 0)
     csv_data_column = pd.to_numeric(csv_data_full['Actual Total Load'], errors = 'raise')
     T: int = 15 * 60 # time period between two data points, in s
     
@@ -31,14 +31,15 @@ def main():
     # remove the average of the data, to generate a centered data set (i.e. removing the 0-frequency component)
     average_data: float = statistics.fmean(csv_data_column)
     centered_data_column: list = [value - average_data for value in csv_data_column]
+    assert abs(statistics.fmean(centered_data_column)) < 0.1, "Centered data is not centered"
     
     # calculate (and plot) the frequency spectrum of the Fourier transform
     frequency_spectrum: dict = fourier.spectrum.convert.to_per_day(fourier.spectrum.frequency(centered_data_column, T))
     fourier.spectrum.plot(frequency_spectrum, "per day")
     
     # extract and export the resonant frequencies
-    resonant_frequencies: dict = fourier.spectrum.resonant_frequencies(frequency_spectrum)
     if (not path_to_output_spectrum is None):
+        resonant_frequencies: dict = fourier.spectrum.resonant_frequencies(frequency_spectrum)
         output_data = pd.DataFrame({'frequency (per day)' : resonant_frequencies.keys(), 'amplitude':resonant_frequencies.values()})
         output_data.to_csv(path_to_output_spectrum, index = False)
     
