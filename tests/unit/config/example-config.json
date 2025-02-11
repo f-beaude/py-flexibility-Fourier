@@ -1,0 +1,12 @@
+{
+  "__comment1__": "This configuration file supports various scripts",
+  "settings": {
+    "database": {
+		"type": "mysql",
+		"host_name": "MyDB",
+		"port": 3306,
+		"user_name": "myUser",
+		"password": "123456"
+	}
+  }
+}

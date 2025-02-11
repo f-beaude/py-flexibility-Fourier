@@ -1,5 +1,6 @@
 # reading data and dealing with missing values
 import datetime
+import json
 import os.path
 
 import numpy as np
@@ -25,18 +26,75 @@ class data:
             return pd.to_numeric(csv_data_full[column_name], errors = 'raise')
     
     class db:
+        
+        class config:
+            def __init__(self):
+                self.__type: str = None
+                self.__host_name: str = None
+                self.__port: int = None
+                self.__user_name: str = None
+                self.__password: str = None
+                
+            def set_type(self, t: str):
+                self.__type = t
+                
+            def get_type(self) -> str:
+                return self.__type
+                
+            def set_host_name(self, host_name: str):
+                self.__host_name = host_name
+                
+            def get_host_name(self) -> str:
+                return self.__host_name
+            
+            def set_port(self, port: int):
+                self.__port = port
+                
+            def get_port(self) -> int:
+                return self.__port
+                
+            def set_user_name(self, user_name: str):
+                self.__user_name = user_name
+                
+            def get_user_name(self) -> str:
+                return self.__user_name
+                
+            def set_password(self, password: str):
+                self.__password = password
+                
+            def get_password(self) -> str:
+                return self.__password
+                
+            def read(file_path: str):
+                assert os.path.isfile(file_path), "Configuration file doesn't exist: " + file_path
+                
+                return_config = data.db.config()
+                with open(file_path, 'r') as j:
+                    config_json = json.loads(j.read())
+                    
+                    return_config.set_type(config_json["settings"]["database"]["type"])
+                    return_config.set_host_name(config_json["settings"]["database"]["host_name"])
+                    return_config.set_port(config_json["settings"]["database"]["port"])
+                    return_config.set_user_name(config_json["settings"]["database"]["user_name"])
+                    return_config.set_password(config_json["settings"]["database"]["password"])
+                
+                return return_config
+        
         def connect():
             from sqlalchemy import create_engine
     
+            config_path: str = os.path.join("..", "..", "py-config.json")
+            db_config = data.db.config.read(config_path)
+    
             # Database connection parameters
-            database_type: str = 'mysql'
-            username: str = 'USER'
-            password: str = 'PASSWORD'
-            host: str = 'HOST'
-            port: int = 3306
+            database_type: str = db_config.get_type()
+            user_name: str = db_config.get_user_name()
+            password: str = db_config.get_password()
+            host_name: str = db_config.get_host_name()
+            port: int = db_config.get_port()
     
             # Create a connection string
-            connection_string: str = f'{database_type}://{username}:{password}@{host}:{port}'
+            connection_string: str = f'{database_type}://{user_name}:{password}@{host_name}:{port}'
             
             # Create a database engine
             return create_engine(connection_string)

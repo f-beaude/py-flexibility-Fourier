@@ -12,6 +12,7 @@ class data:
     
     def all ():
         data.Data().all()
+        data.DB().all()
 
     class Data(unittest.TestCase):
         def all(self):
@@ -40,6 +41,22 @@ class data:
             #self.assertEqual(len(invalid_values_nan), 2)
             self.assertTrue(math.isnan(invalid_values_nan[0]))
             self.assertTrue(np.inf in invalid_values_both)
+
+    class DB(unittest.TestCase):
+        def all(self):
+            self.__db_config()
+            
+        def __db_config(self):
+            path_to_config_example: str = os.path.join("..", "..", "config", "example-config.json")
+            example_config = fourier.data.db.config.read(path_to_config_example)
+            
+            self.assertEqual(example_config.get_host_name(), "MyDB")
+            self.assertEqual(example_config.get_type(), "mysql")
+            self.assertEqual(example_config.get_port(), 3306)
+            self.assertEqual(example_config.get_user_name(), "myUser")
+            self.assertEqual(example_config.get_password(), "123456")
+            
+        
 
 def main():
     data.all()
